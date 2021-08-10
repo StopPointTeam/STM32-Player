@@ -1,4 +1,4 @@
-//文字显示库
+//游戏引擎文字显示库
 
 #include "sys.h"
 #include "lcd.h"
@@ -217,7 +217,7 @@ uint8_t GE_Font_PrintGBK(uint16_t x, uint16_t y, uint8_t *ch, uint8_t font_size,
   * @param  font_color: 字体颜色
   * @param  back_color: 背景颜色。透明时无效
   * @param  is_transparent: 是否透明
-  * @param  str: 字符创。需为 uint8_t *
+  * @param  str: 字符串。需为 uint8_t *
   */
 uint8_t GE_Font_Print(
     uint16_t x_start,
@@ -255,6 +255,12 @@ uint8_t GE_Font_Print(
             {
                 is_print_all = TRUE;
                 break;
+            }
+
+            if (*str == '\r')
+            {
+                str++;
+                continue;
             }
 
             if ((x + font_size / 2 > x_end_plus_1) || (*str == '\n'))
@@ -301,7 +307,7 @@ uint8_t GE_Font_Print(
   * @param  y_start
   * @param  width: 显示窗的宽
   * @param  height: 显示窗口的高
-  * @param  str: 字符创。需为 uint8_t *
+  * @param  str: 字符串。需为 uint8_t *
   */
 uint8_t GE_Font_Print_WithSet(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, uint8_t *str)
 {

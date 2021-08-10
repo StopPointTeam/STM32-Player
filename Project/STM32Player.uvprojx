@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\User\Main;..\User\GameEngine;..\User\Picture;..\HAL_Lib\Inc;..\System\delay;..\System\sys;..\System\usart;..\System\spi;..\System\gpio;..\Hardware\led;..\Hardware\key;..\Hardware\LCD240;..\Hardware\GBK_LibDrive;..\Hardware\lcd</IncludePath>
+              <IncludePath>..\Core;..\Hardware\led;..\Hardware\key;..\Hardware\lcd;..\Hardware\sdio;..\Libraries\HAL_Lib\Inc;..\Libraries\FatFs;..\Libraries\FatFs\drivers;..\System\delay;..\System\sys;..\System\spi;..\System\gpio;..\User\Main;..\User\GameEngine;..\User\Picture;..\User\SD;..\User\APP_Reader</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -456,97 +456,127 @@
             <File>
               <FileName>stm32h7xx_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_adc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_adc.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_adc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_adc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_adc_ex.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_adc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_cortex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_dac.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_dac_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_dac_ex.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_cortex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_dma.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_dma.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_dma_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_dma_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_exti.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_dma_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_msp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_msp.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_gpio.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_rcc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_rcc.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_rcc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_rcc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_rcc_ex.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_rcc_ex.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_rtc.c</FileName>
+              <FileName>stm32h7xx_hal_lptim.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_rtc.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_lptim.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_rtc_ex.c</FileName>
+              <FileName>stm32h7xx_hal_mdma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_rtc_ex.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_mdma.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_spi.c</FileName>
+              <FileName>stm32h7xx_hal_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_spi.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_pwr.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_spi_ex.c</FileName>
+              <FileName>stm32h7xx_hal_sram.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_spi_ex.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_sram.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_tim.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_tim.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_tim.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HAL_Lib\Src\stm32h7xx_hal_tim_ex.c</FilePath>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_tim_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_ll_fmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_ll_fmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_pcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_pcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_pcd_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_pcd_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_pwr_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_pwr_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_sd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_sd.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_sd_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_sd_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_ll_sdmmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_ll_sdmmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_ll_usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_ll_usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_spi_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_spi_ex.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -568,6 +598,11 @@
               <FileType>1</FileType>
               <FilePath>..\Hardware\lcd\lcd.c</FilePath>
             </File>
+            <File>
+              <FileName>sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\sdio\sdio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -588,6 +623,46 @@
               <FileType>1</FileType>
               <FilePath>..\User\GameEngine\GE_Font.c</FilePath>
             </File>
+            <File>
+              <FileName>GE_GUI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\GameEngine\GE_GUI.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FatFs</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FatFs\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FatFs\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff_gen_drv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FatFs\ff_gen_drv.c</FilePath>
+            </File>
+            <File>
+              <FileName>syscall.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FatFs\option\syscall.c</FilePath>
+            </File>
+            <File>
+              <FileName>sd_diskio_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FatFs\drivers\sd_diskio_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>cc936.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FatFs\option\cc936.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -597,6 +672,26 @@
               <FileName>pic_minecraft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Picture\pic_minecraft.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SD</GroupName>
+          <Files>
+            <File>
+              <FileName>SD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\SD\SD.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_Reader</GroupName>
+          <Files>
+            <File>
+              <FileName>APP_Reader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\APP_Reader\APP_Reader.c</FilePath>
             </File>
           </Files>
         </Group>

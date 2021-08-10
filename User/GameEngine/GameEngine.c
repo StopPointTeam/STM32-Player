@@ -1,3 +1,5 @@
+//ÓÎÏ·ÒýÇæ
+
 #include "sys.h"
 #include "delay.h"
 #include "led.h"
@@ -10,11 +12,7 @@
   */
 void GE_Init(void)
 {
-#ifdef EN_GE_DRAW
     GE_Draw_Init();
-#endif
-
-#ifdef EN_GE_FONT
     GE_Font_Init();
-#endif
+    GE_GUI_Init();
 }

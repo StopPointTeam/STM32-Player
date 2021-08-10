@@ -1,4 +1,9 @@
+//游戏引擎图像绘制库
+
+#include "stdlib.h"
+
 #include "sys.h"
+#include "spi.h"
 
 #include "lcd.h"
 #include "GameEngine.h"
@@ -30,6 +35,8 @@ void GE_Draw_Init(void)
     //绘制图片设置
     ge_draw_pic_set.is_reverse = FALSE;
     ge_draw_pic_set.pos_mode = UP_LEFT;
+
+    GE_Draw_ClrAll(WHITE);
 }
 
 /**

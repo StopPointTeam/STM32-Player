@@ -47,6 +47,8 @@ uint8_t KEY_GetKey(void)
     {
         return NO_KEY;
     }
+
+    return NO_KEY;
 }
 
 /**
@@ -61,6 +63,6 @@ uint8_t KEY_GetKeyWait(void)
     {
         key = KEY_GetKey();
     }
-    
+
     return key;
 }

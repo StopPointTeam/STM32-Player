@@ -1,3 +1,5 @@
+//ÓÎÏ·ÒýÇæÍ¼Ïñ»æÖÆ¿â
+
 #ifndef __GE_DRAW_H
 #define __GE_DRAW_H
 

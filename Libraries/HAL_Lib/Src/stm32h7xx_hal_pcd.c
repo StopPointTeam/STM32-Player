@@ -998,10 +998,11 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterLpmCallback(PCD_HandleTypeDef *hpcd)
   */
 HAL_StatusTypeDef HAL_PCD_Start(PCD_HandleTypeDef *hpcd)
 {
+  
   USB_OTG_GlobalTypeDef *USBx = hpcd->Instance;
 
   __HAL_LOCK(hpcd);
-
+  
   if ((hpcd->Init.battery_charging_enable == 1U) &&
       (hpcd->Init.phy_itface != USB_OTG_ULPI_PHY))
   {

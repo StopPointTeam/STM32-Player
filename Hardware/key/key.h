@@ -8,6 +8,8 @@
 #define NO_KEY 0
 #define KEY1 1
 #define KEY2 2
+#define KEY3 3
+#define KEY4 4
 
 #define KEY1_Val HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3)
 #define KEY2_Val HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_5)

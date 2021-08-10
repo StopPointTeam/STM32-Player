@@ -1,4 +1,4 @@
-//文字显示库
+//游戏引擎文字显示库
 
 #ifndef __GE_FONT_H
 #define __GE_FONT_H
@@ -14,7 +14,7 @@ void GE_FontInit(void);
 #define FONT_48 48
 #define FONT_64 64
 
-//边界范围
+//边界最大
 #define BORDER_MAX 0xffff
 
 typedef struct
