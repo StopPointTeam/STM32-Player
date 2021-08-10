@@ -9,6 +9,7 @@
 
 #define Write_Through() (*(__IO uint32_t *)0XE000EF9C = 1UL << 2) //Cache ͸дģʽ
 
+void MPU_Config(void);
 void Cache_Enable(void);
 uint8_t Clock_Init(uint32_t plln, uint32_t pllm, uint32_t pllp, uint32_t pllq);
 uint8_t Get_ICacheSta(void);
