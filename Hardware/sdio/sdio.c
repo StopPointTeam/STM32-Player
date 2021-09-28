@@ -80,72 +80,17 @@
 #include "stm32h7xx_hal.h"
 #include "sdio.h"
 
-/** @addtogroup BSP
-  * @{
-  */
-
-/** @addtogroup STM32H743I_EVAL
-  * @{
-  */
-
-/** @addtogroup STM32H743I_EVAL_SD
-  * @{
-  */
-
-/** @defgroup STM32H743I_EVAL_SD_Private_TypesDefinitions SD Private TypesDefinitions
-  * @{
-  */
-/**
-  * @}
-  */
-
-/** @defgroup STM32H743I_EVAL_SD_Private_Defines SD Private Defines
-  * @{
-  */
-
-/* 卡插入引脚 : PG9 */
 //#define SD_DETECT_GPIO_CLK_ENABLE()	__HAL_RCC_GPIOB_CLK_ENABLE()
 
 //#define SD_DETECT_GPIO_PORT	GPIOG
 //#define SD_DETECT_PIN		GPIO_PIN_9
 
-/* PG9 == 0 表示卡插入 */
 //#define SD_IS_INSERTED()  ((SD_DETECT_GPIO_PORT->IDR & SD_DETECT_PIN) == 0)
 
 #define SD_IS_INSERTED() 1
 
-/**
-  * @}
-  */
-
-/** @defgroup STM32H743I_EVAL_SD_Private_Macros SD Private Macros
-  * @{
-  */
-/**
-  * @}
-  */
-
-/** @defgroup STM32H743I_EVAL_SD_Private_Variables SD Private Variables
-  * @{
-  */
-
 SD_HandleTypeDef uSdHandle;
 //static uint8_t UseExtiModeDetection = 0;
-
-/**
-  * @}
-  */
-
-/** @defgroup STM32H743I_EVAL_SD_Private_FunctionPrototypes SD Private FunctionPrototypes
-  * @{
-  */
-/**
-  * @}
-  */
-
-/** @addtogroup STM32H743I_EVAL_SD_Exported_Functions
-  * @{
-  */
 
 /**
   * @brief  Initializes the SD card device.
@@ -563,14 +508,6 @@ void HAL_SD_DriveTransciver_1_8V_Callback(FlagStatus status)
     BSP_SD_DriveTransciver_1_8V_Callback(status);
 }
 
-/*
-*********************************************************************************************************
-*	函 数 名: SDIO_IRQHandler
-*	功能说明: SDIO中断
-*	形    参:  无
-*	返 回 值: 无
-*********************************************************************************************************
-*/
 void SDMMC1_IRQHandler(void)
 {
     HAL_SD_IRQHandler(&uSdHandle);

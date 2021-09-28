@@ -1,13 +1,19 @@
 //游戏引擎文字显示库
 
+#include "stdio.h"
+
 #include "sys.h"
 #include "lcd.h"
 #include "GameEngine.h"
 
 #include "GE_Font.h"
 
-#define GE_Font_GetACSIIDataSize(__FONT_SIZE__) ((__FONT_SIZE__ / 8 + ((__FONT_SIZE__ % 8) ? 1 : 0)) * (__FONT_SIZE__ / 2))
-#define GE_Font_GetGBKDataSize(__FONT_SIZE__) ((__FONT_SIZE__ / 8 + ((__FONT_SIZE__ % 8) ? 1 : 0)) * (__FONT_SIZE__))
+/**************************************** 私有定义 ****************************************/
+
+#define GE_Font_GetACSIIDataSize(__font_size__) ((__font_size__ / 8 + ((__font_size__ % 8) ? 1 : 0)) * (__font_size__ / 2))
+#define GE_Font_GetGBKDataSize(__font_size__) ((__font_size__ / 8 + ((__font_size__ % 8) ? 1 : 0)) * (__font_size__))
+
+/*****************************************************************************************/
 
 /**************************************** 私有函数 ****************************************/
 
@@ -213,27 +219,30 @@ uint8_t GE_Font_PrintGBK(uint16_t x, uint16_t y, uint8_t *ch, uint8_t font_size,
   * @param  y_start
   * @param  width: 显示窗的宽
   * @param  height: 显示窗口的高
-  * @param  font_size: 字体大小。注意：若含汉字，只能使用 FONT_12 24 32 48
+  * @param  font_size: 字体大小。注意：若含汉字，只能使用 FONT_12 16 24 32
   * @param  font_color: 字体颜色
   * @param  back_color: 背景颜色。透明时无效
   * @param  is_transparent: 是否透明
-  * @param  str: 字符串。需为 uint8_t *
+  * @param  format: 格式字符串
+  * @param  arg: 参数表
+  * @retval 打印完全返回 1，未打印完全返回0 
   */
-uint8_t GE_Font_Print(
-    uint16_t x_start,
-    uint16_t y_start,
+uint8_t GE_Font_Print_Va(
+    int16_t x_start,
+    int16_t y_start,
     uint16_t width,
     uint16_t height,
     uint8_t font_size,
     uint16_t font_color,
     uint16_t back_color,
     uint8_t is_transparent,
-    uint8_t *str)
+    uint8_t *format,
+    va_list arg)
 {
-    uint16_t x_end_plus_1;
-    uint16_t y_end_plus_1;
-    uint16_t x = x_start;
-    uint16_t y = y_start;
+    int16_t x_end_plus_1;
+    int16_t y_end_plus_1;
+    int16_t x = x_start;
+    int16_t y = y_start;
 
     if (width == BORDER_MAX)
         x_end_plus_1 = LCD_WIDTH;
@@ -246,6 +255,11 @@ uint8_t GE_Font_Print(
         y_end_plus_1 = y_start + height;
 
     uint8_t is_print_all = FALSE;
+
+    uint8_t temp_str[1040];
+    uint8_t *str = temp_str;
+
+    vsprintf(str, format, arg);
 
     while (1)
     {
@@ -302,16 +316,69 @@ uint8_t GE_Font_Print(
 }
 
 /**
+  * @brief  在指定区域内显示字符串。支持 ASCII、GBK 汉字
+  * @param  x_start
+  * @param  y_start
+  * @param  width: 显示窗的宽
+  * @param  height: 显示窗口的高
+  * @param  font_size: 字体大小。注意：若含汉字，只能使用 FONT_12 16 24 32
+  * @param  font_color: 字体颜色
+  * @param  back_color: 背景颜色。透明时无效
+  * @param  is_transparent: 是否透明
+  * @param  format: 格式字符串。用法与 printf 相同
+  * @param  ...
+  * @retval 打印完全返回 1，未打印完全返回0 
+  */
+uint8_t GE_Font_Print(
+    int16_t x_start,
+    int16_t y_start,
+    uint16_t width,
+    uint16_t height,
+    uint8_t font_size,
+    uint16_t font_color,
+    uint16_t back_color,
+    uint8_t is_transparent,
+    uint8_t *format,
+    ...)
+{
+    va_list aptr;
+    va_start(aptr, format);
+
+    uint8_t ret = GE_Font_Print_Va(
+        x_start,
+        y_start,
+        width,
+        height,
+        font_size,
+        font_color,
+        back_color,
+        is_transparent,
+        format,
+        aptr);
+
+    va_end(aptr);
+    return ret;
+}
+
+/**
   * @brief  在指定区域内显示字符串，使用设置。支持 ASCII、GBK 汉字
   * @param  x_start
   * @param  y_start
   * @param  width: 显示窗的宽
   * @param  height: 显示窗口的高
-  * @param  str: 字符串。需为 uint8_t *
+  * @param  format: 格式字符串
+  * @param  arg: 参数表
+  * @retval 打印完全返回 1，未打印完全返回0 
   */
-uint8_t GE_Font_Print_WithSet(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, uint8_t *str)
+uint8_t GE_Font_Print_WithSet_Va(
+    int16_t x_start,
+    int16_t y_start,
+    uint16_t width,
+    uint16_t height,
+    uint8_t *format,
+    va_list arg)
 {
-    return GE_Font_Print(
+    return GE_Font_Print_Va(
         x_start,
         y_start,
         width,
@@ -320,5 +387,39 @@ uint8_t GE_Font_Print_WithSet(uint16_t x_start, uint16_t y_start, uint16_t width
         ge_font_print_set.font_color,
         ge_font_print_set.back_color,
         ge_font_print_set.is_transparent,
-        str);
+        format,
+        arg);
+}
+
+/**
+  * @brief  在指定区域内显示字符串，使用设置。支持 ASCII、GBK 汉字
+  * @param  x_start
+  * @param  y_start
+  * @param  width: 显示窗的宽
+  * @param  height: 显示窗口的高
+  * @param  format: 格式字符串。用法与 printf 相同
+  * @param  ...
+  * @retval 打印完全返回 1，未打印完全返回0 
+  */
+uint8_t GE_Font_Print_WithSet(
+    int16_t x_start,
+    int16_t y_start,
+    uint16_t width,
+    uint16_t height,
+    uint8_t *format,
+    ...)
+{
+    va_list aptr;
+    va_start(aptr, format);
+
+    uint8_t ret = GE_Font_Print_WithSet_Va(
+        x_start,
+        y_start,
+        width,
+        height,
+        format,
+        aptr);
+
+    va_end(aptr);
+    return ret;
 }

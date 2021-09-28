@@ -1,3 +1,5 @@
+//LCD 库（ILI9431 及字库）
+
 #ifndef __LCD_H
 #define __LCD_H
 
@@ -155,6 +157,7 @@
 #define LCD_Reverse_Off LCD_SendCmd(LCD_CMD_DINVOFF) //关全局反色模式
 
 #define LCD_RAM_Wr LCD_SendCmd(LCD_CMD_RAMWR) //开始写显存
+#define LCD_RAM_Rd LCD_SendCmd(LCD_CMD_RAMRD) //开始读显存
 
 /**************************************** 通讯函数 ****************************************/
 
@@ -173,6 +176,7 @@ void LCD_SendCmdDataBytes(uint8_t cmd, uint8_t *pData, uint32_t Count);
 /**************************************** 操作函数 ****************************************/
 
 void LCD_Init(void);
+void LCD_SetWin(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
 void LCD_Font_ReadAddr(uint8_t *pData, uint32_t addr, uint16_t Count);
 

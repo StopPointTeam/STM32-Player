@@ -1,11 +1,11 @@
-#include "delay.h"
+//LCD 库（ILI9431 及字库）
+
+#include "systick.h"
 #include "spi.h"
 
 #include "lcd.h"
 
 /**************************************** 私有函数 ****************************************/
-
-void LCD_SetWin(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
 /*****************************************************************************************/
 
@@ -116,7 +116,15 @@ void LCD_SendCmdDataBytes(uint8_t cmd, uint8_t *pData, uint32_t Count)
 void LCD_Init(void)
 {
     //初始化 ILI9431
-    GPIO_B0_B1_B12_Init(); //初始化 PB0 PB1 PB12
+    //初始化 PB0 PB1 PB12
+    GPIO_InitTypeDef GPIO_Initure;
+    __HAL_RCC_GPIOB_CLK_ENABLE(); //开启 PB 时钟
+
+    GPIO_Initure.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_12; //PB0 PB1 PB12
+    GPIO_Initure.Mode = GPIO_MODE_OUTPUT_PP;                  //推挽输出
+    GPIO_Initure.Pull = GPIO_PULLUP;                          //上拉
+    GPIO_Initure.Speed = GPIO_SPEED_FREQ_VERY_HIGH;           //高速
+    HAL_GPIO_Init(GPIOB, &GPIO_Initure);                      //初始化 PB0 PB1 PB12
 
     LCD_Stop_Send;
     LCD_Data_Mode_On;

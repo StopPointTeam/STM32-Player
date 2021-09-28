@@ -74,7 +74,7 @@ void GE_GUI_DoubleThickRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_
 }
 
 /**
-  * @brief  消息窗口
+  * @brief  消息窗口。自动刷新屏幕
   * @param  x
   * @param  y
   * @param  width: 窗口的宽
@@ -97,13 +97,17 @@ void GE_GUI_MsgBox(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint
     //内容
     GE_Font_Print(x + 6, y + FONT_16 + 10, width - 12, BORDER_MAX, FONT_16, BLACK, WHITE, FALSE, content);
 
+    GE_Draw_Disp();
+
+    KEY_ClearKey();
+
     //调用回调函数
     if (handler_func != NULL)
         handler_func();
 }
 
 /**
-  * @brief  菜单窗口
+  * @brief  菜单窗口。自动刷新屏幕
   * @param  x
   * @param  y
   * @param  width: 窗口的宽
@@ -112,7 +116,7 @@ void GE_GUI_MsgBox(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint
   * @param  content_amount: 菜单项数
   * @param  content: 菜单内容数组
   * @param  handler_func: 回调函数。设置为 NULL 不执行回调
-  * @retval 被选中的选项序号，从 1 开始
+  * @retval 被选中的选项序号，从 1 开始。返回 0 表示用户触发 JOY_L_DOWN 事件，此时不调用回调函数
   */
 uint8_t GE_GUI_MenuBox(
     uint16_t x,
@@ -144,25 +148,37 @@ uint8_t GE_GUI_MenuBox(
             GE_GUI_TextBox(x + 4, y + FONT_16 + 8 + i * (FONT_16 + 3), width - 8, FONT_16 + 4, BLACK, WHITE, BLACK, 1, content[i]);
     }
 
+    GE_Draw_Disp();
+
+    KEY_ClearKey();
+
     while (1)
     {
         uint8_t key = KEY_GetKeyWait();
 
-        if (key == KEY2)
+        if (key == JOY_OK_UP)
         {
             break;
         }
-        else if (key == KEY3 && choice_num > 1)
+        else if (key == JOY_L_DOWN)
+        {
+            return 0;
+        }
+        else if (key == JOY_U_DOWN && choice_num > 1)
         {
             GE_GUI_TextBox(x + 4, y + FONT_16 + 8 + (choice_num - 1) * (FONT_16 + 3), width - 8, FONT_16 + 4, BLACK, WHITE, BLACK, 1, content[choice_num - 1]);
             choice_num--;
             GE_GUI_TextBox(x + 4, y + FONT_16 + 8 + (choice_num - 1) * (FONT_16 + 3), width - 8, FONT_16 + 4, WHITE, BLUE, BLACK, 1, content[choice_num - 1]);
+
+            GE_Draw_Disp();
         }
-        else if (key == KEY1 && choice_num < content_amount)
+        else if (key == JOY_D_DOWN && choice_num < content_amount)
         {
             GE_GUI_TextBox(x + 4, y + FONT_16 + 8 + (choice_num - 1) * (FONT_16 + 3), width - 8, FONT_16 + 4, BLACK, WHITE, BLACK, 1, content[choice_num - 1]);
             choice_num++;
             GE_GUI_TextBox(x + 4, y + FONT_16 + 8 + (choice_num - 1) * (FONT_16 + 3), width - 8, FONT_16 + 4, WHITE, BLUE, BLACK, 1, content[choice_num - 1]);
+
+            GE_Draw_Disp();
         }
     }
 

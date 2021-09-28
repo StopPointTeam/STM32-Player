@@ -1,7 +1,9 @@
+//阅读器应用
+
 #include "stdio.h"
 
 #include "sys.h"
-#include "delay.h"
+#include "systick.h"
 
 #include "key.h"
 #include "lcd.h"
@@ -56,6 +58,7 @@ uint8_t APP_Reader_Menu(void);
 uint8_t APP_Reader_SaveWrite(void);
 uint8_t APP_Reader_SaveRead(void);
 void APP_Reader_Msg(uint8_t *head, uint8_t *content);
+void APP_Reader_Msg_NoBlock(uint8_t *head, uint8_t *content);
 
 /*****************************************************************************************/
 
@@ -65,9 +68,11 @@ void APP_Reader_Msg(uint8_t *head, uint8_t *content);
 void APP_Reader_Launcher(void)
 {
     //GUI 选取文件
-    if (SD_SelectFile(filename, "txt") != SD_OK)
+    uint8_t ret;
+    if ((ret = SD_SelectFile(filename, "txt")) != SD_OK)
     {
-        APP_Reader_Msg("警告", "选取文件出错！\n\n请按任意键返回");
+        if (ret == SD_ERROR)
+            APP_Reader_Msg("警告", "选取文件出错！\n\n请按任意键返回");
 
         return;
     }
@@ -104,28 +109,26 @@ void APP_Reader_Launcher(void)
     f_open(&page_file, page_filepath, FA_OPEN_EXISTING | FA_READ); //打开分页文件
     while (1)
     {
-        LCD_Disp_Off;
         GE_Draw_ClrAll(WHITE);
 
         if (APP_Reader_ReadPage(current_font_size, current_page) != 0)
         {
             GE_Draw_ClrAll(WHITE);
-            LCD_Disp_On;
             APP_Reader_Msg("警告", "发生错误！\n\n请按任意键返回");
 
             return;
         }
-        LCD_Disp_On;
 
         switch (KEY_GetKeyWait())
         {
-        case KEY1: //设置菜单
+        case JOY_L_UP: //设置菜单
         {
             if (APP_Reader_Menu() != 0)
                 return;
         }
         break;
-        case KEY2: //向后翻页
+
+        case JOY_D_DOWN: //向后翻页
         {
             if (current_page == page_amount)
                 APP_Reader_Msg("提示", "已到最后一页！");
@@ -133,16 +136,13 @@ void APP_Reader_Launcher(void)
                 current_page++;
         }
         break;
-        case KEY3: //目前不存在此键
+
+        case JOY_U_DOWN: //向前翻页
         {
             if (current_page == 1)
                 APP_Reader_Msg("提示", "已到第一页！");
             else
                 current_page--;
-        }
-        break;
-        case KEY4: //目前不存在此键
-        {
         }
         }
     }
@@ -176,16 +176,23 @@ uint8_t APP_Reader_ReadPage(uint8_t font_size, uint32_t page_num)
 
     *((uint8_t *)buffer + page.page_size) = '\0';
 
-    if (font_size == FONT_16)
-        ge_font_print_set.font_size = FONT_16;
-    else
-        ge_font_print_set.font_size = FONT_24;
+    GE_Font_Print(0, 0, BORDER_MAX, BORDER_MAX, font_size, BLACK, WHITE, TRUE, buffer);
 
-    GE_Font_Print_WithSet(0, 0, BORDER_MAX, BORDER_MAX, buffer);
+    GE_Font_Print(
+        1,
+        223,
+        BORDER_MAX,
+        BORDER_MAX,
+        FONT_16,
+        BLUE,
+        WHITE,
+        TRUE,
+        "页数:%d/%d  %.1f%%",
+        page_num,
+        page_amount,
+        (float)page_num / (float)page_amount * 100.0);
 
-    char temp_str[15];
-    sprintf(temp_str, "页数:%d/%d  %.1f%%", page_num, page_amount, (float)page_num / (float)page_amount * 100.0);
-    GE_Font_Print(1, 223, BORDER_MAX, BORDER_MAX, FONT_16, BLUE, WHITE, TRUE, temp_str);
+    GE_Draw_Disp();
 
     return 0;
 }
@@ -197,6 +204,8 @@ uint8_t APP_Reader_ReadPage(uint8_t font_size, uint32_t page_num)
   */
 uint8_t APP_Reader_SplitPages(uint8_t font_size)
 {
+    APP_Reader_Msg_NoBlock("提示", "正在分页中...\n\n请稍等");
+
     uint32_t br;
     FRESULT f_res;
     char ch;
@@ -314,12 +323,18 @@ uint8_t APP_Reader_SplitPages(uint8_t font_size)
   */
 uint8_t APP_Reader_Menu(void)
 {
-    uint8_t content[2][GE_GUI_MENUBOX_CONTENT_LEN] = {"字体设置", "退出"};
+    uint8_t content[3][GE_GUI_MENUBOX_CONTENT_LEN] = {"字体设置", "退出阅读器", "返回"};
 
     GE_Draw_Fill(50, 50, 220, 140, WHITE);
-    switch (GE_GUI_MenuBox(50, 50, 220, 140, "菜单", 2, content, NULL))
+    switch (GE_GUI_MenuBox(50, 50, 220, 140, "菜单", 3, content, NULL))
     {
-    case 1:
+    case 0: //返回
+    {
+        KEY_ClearKey();
+    }
+    break;
+
+    case 1: //字体设置
     {
         GE_Draw_Fill(50, 50, 220, 140, WHITE);
 
@@ -361,7 +376,7 @@ uint8_t APP_Reader_Menu(void)
     }
     break;
 
-    case 2:
+    case 2: //退出
     {
         //关闭文件
         f_close(&page_file);
@@ -372,6 +387,10 @@ uint8_t APP_Reader_Menu(void)
         return 1;
     }
     break;
+
+    case 3: //返回
+    {
+    }
     }
 
     return 0;
@@ -447,5 +466,16 @@ void APP_Reader_Msg(uint8_t *head, uint8_t *content)
 {
     GE_Draw_Fill(60, 75, 200, 90, WHITE);
     GE_GUI_MsgBox(60, 75, 200, 90, head, content, NULL);
-    KEY_GetKeyWait();
+    KEY_WaitKey(JOY_L);
+}
+
+/**
+  * @brief  消息框，任意键按下后退出
+  * @param  head: 标题
+  * @param  content: 内容
+  */
+void APP_Reader_Msg_NoBlock(uint8_t *head, uint8_t *content)
+{
+    GE_Draw_Fill(60, 75, 200, 90, WHITE);
+    GE_GUI_MsgBox(60, 75, 200, 90, head, content, NULL);
 }

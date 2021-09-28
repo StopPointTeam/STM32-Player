@@ -1,7 +1,7 @@
 //ÓÎÏ·ÒıÇæ
 
 #include "sys.h"
-#include "delay.h"
+#include "systick.h"
 #include "led.h"
 #include "lcd.h"
 

@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\Hardware\led;..\Hardware\key;..\Hardware\lcd;..\Hardware\sdio;..\Libraries\HAL_Lib\Inc;..\Libraries\FatFs;..\Libraries\FatFs\drivers;..\System\delay;..\System\sys;..\System\spi;..\System\gpio;..\User\Main;..\User\GameEngine;..\User\Picture;..\User\SD;..\User\APP_Reader</IncludePath>
+              <IncludePath>..\User\Main;..\Core;..\Libraries\HAL_Lib\Inc;..\Libraries\FatFs;..\Libraries\FatFs\drivers;..\System\systick;..\System\sys;..\System\spi;..\System\gpio;..\System\tim;..\System\usart;..\System\adc;..\Hardware\led;..\Hardware\key;..\Hardware\lcd;..\Hardware\sdio;..\Hardware\hc25;..\User\GameEngine;..\User\Picture;..\User\SD;..\User\WLAN;..\User\Clock;..\User\APP_Reader;..\User\APP_Video;..\User\APP_Plane;..\User\APP_Weather;..\User\APP_Setting;..\User\FxLib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -422,31 +422,6 @@
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\system_stm32h7xx.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>System</GroupName>
-          <Files>
-            <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\delay\delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>sys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\sys\sys.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\spi\spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\gpio\gpio.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -578,6 +553,61 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_spi_ex.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32h7xx_hal_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_uart_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_uart_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_usart_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\HAL_Lib\Src\stm32h7xx_hal_usart_ex.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>System</GroupName>
+          <Files>
+            <File>
+              <FileName>sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\sys\sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\spi\spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\tim\tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\usart\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\systick\systick.c</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\adc\adc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -602,6 +632,11 @@
               <FileName>sdio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\sdio\sdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>hc25.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\hc25\hc25.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -669,9 +704,9 @@
           <GroupName>Picture</GroupName>
           <Files>
             <File>
-              <FileName>pic_minecraft.c</FileName>
+              <FileName>Picture.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\User\Picture\pic_minecraft.c</FilePath>
+              <FilePath>..\User\Picture\Picture.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -686,12 +721,82 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>WLAN</GroupName>
+          <Files>
+            <File>
+              <FileName>WLAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\WLAN\WLAN.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Clock</GroupName>
+          <Files>
+            <File>
+              <FileName>Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Clock\Clock.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>APP_Reader</GroupName>
           <Files>
             <File>
               <FileName>APP_Reader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\APP_Reader\APP_Reader.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_Video</GroupName>
+          <Files>
+            <File>
+              <FileName>APP_Video.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\APP_Video\APP_Video.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_Plane</GroupName>
+          <Files>
+            <File>
+              <FileName>APP_Plane.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\APP_Plane\APP_Plane.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_Weather</GroupName>
+          <Files>
+            <File>
+              <FileName>APP_Weather.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\APP_Weather\APP_Weather.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_Setting</GroupName>
+          <Files>
+            <File>
+              <FileName>APP_Setting.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\APP_Setting\APP_Setting.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Fxlib</GroupName>
+          <Files>
+            <File>
+              <FileName>fxlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\FxLib\fxlib.c</FilePath>
             </File>
           </Files>
         </Group>

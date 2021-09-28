@@ -31,8 +31,8 @@
 ; </h>
 
 ;Stack_Size      EQU     0x00000400
-;栈大小设置为 262144 Bytes
-Stack_Size      EQU     0x00040000
+;栈大小设置为 131072 Bytes
+Stack_Size      EQU     0x00020000
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -44,8 +44,8 @@ __initial_sp
 ; </h>
 
 ;Heap_Size       EQU     0x00000200
-;堆大小设置为 262144 Bytes
-Heap_Size       EQU     0x00040000
+;堆大小设置为 393216 Bytes
+Heap_Size       EQU     0x00060000
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base

@@ -3,6 +3,8 @@
 #ifndef __GE_FONT_H
 #define __GE_FONT_H
 
+#include "stdarg.h"
+
 void GE_FontInit(void);
 
 /**************************************** »æÖÆºº×Ö ****************************************/
@@ -27,18 +29,45 @@ typedef struct
 
 extern _ge_font_print_set ge_font_print_set;
 
-uint8_t GE_Font_Print(
-    uint16_t x_start,
-    uint16_t y_start,
+uint8_t GE_Font_Print_Va(
+    int16_t x_start,
+    int16_t y_start,
     uint16_t width,
     uint16_t height,
     uint8_t font_size,
     uint16_t font_color,
     uint16_t back_color,
     uint8_t is_transparent,
-    uint8_t *str);
+    uint8_t *format,
+    va_list arg);
 
-uint8_t GE_Font_Print_WithSet(uint16_t x_start, uint16_t y_start, uint16_t width, uint16_t height, uint8_t *str);
+uint8_t GE_Font_Print(
+    int16_t x_start,
+    int16_t y_start,
+    uint16_t width,
+    uint16_t height,
+    uint8_t font_size,
+    uint16_t font_color,
+    uint16_t back_color,
+    uint8_t is_transparent,
+    uint8_t *format,
+    ...);
+
+uint8_t GE_Font_Print_WithSet_Va(
+    int16_t x_start,
+    int16_t y_start,
+    uint16_t width,
+    uint16_t height,
+    uint8_t *format,
+    va_list arg);
+
+uint8_t GE_Font_Print_WithSet(
+    int16_t x_start,
+    int16_t y_start,
+    uint16_t width,
+    uint16_t height,
+    uint8_t *format,
+    ...);
 
 /*****************************************************************************************/
 

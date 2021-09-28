@@ -91,7 +91,7 @@ uint8_t SD_GetPath(uint8_t *filepath, uint8_t *filename)
   * @brief  SD 卡 GUI 文件选择器
   * @param  filepath: 返回储存文件路径
   * @param  filesuffix: 文件后缀名。NULL 时不限后缀
-  * @retval 成功返回 0，失败返回 1
+  * @retval 成功返回 0，失败返回 1，用户按下 JOY_L 返回 2
   */
 uint8_t SD_SelectFile(uint8_t *filename, uint8_t *filesuffix)
 {
@@ -133,6 +133,9 @@ uint8_t SD_SelectFile(uint8_t *filename, uint8_t *filesuffix)
     }
 
     uint8_t choice = GE_GUI_MenuBox(5, 5, 310, 230, "请选择文件：", num, content, NULL);
+
+    if (choice == 0)
+        return 2;
     
     strcpy(filename, content[choice - 1]);
     return SD_OK;

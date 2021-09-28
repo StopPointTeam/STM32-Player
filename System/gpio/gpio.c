@@ -1,4 +1,4 @@
-//管理所有 GPIO 的初始化
+//管理 GPIO 的初始化
 
 #include "sys.h"
 
@@ -26,26 +26,33 @@ void GPIO_A1_Init(void)
 /************************************** GPIO E3 C5 **************************************/
 
 /**
-  * @brief  PE3 PC5 初始化，用于 KEY1 KEY2
+  * @brief  PE3 PC5 PD10 初始化，用于 KEY1 KEY2 KEY3
   */
-void GPIO_E3_C5_Init(void)
+void GPIO_E3_C5_D10_Init(void)
 {
     GPIO_InitTypeDef GPIO_Initure;
 
     __HAL_RCC_GPIOC_CLK_ENABLE(); //开启 PC 时钟
     __HAL_RCC_GPIOE_CLK_ENABLE(); //开启 PE 时钟
+    __HAL_RCC_GPIOD_CLK_ENABLE(); //开启 PD 时钟
 
-    GPIO_Initure.Pin = GPIO_PIN_3;                  //PE3：对应 K1
+    GPIO_Initure.Pin = GPIO_PIN_3;                  //PE3：对应 KEY1
     GPIO_Initure.Mode = GPIO_MODE_INPUT;            //输入
     GPIO_Initure.Pull = GPIO_PULLUP;                //上拉
     GPIO_Initure.Speed = GPIO_SPEED_FREQ_VERY_HIGH; //高速
     HAL_GPIO_Init(GPIOE, &GPIO_Initure);            //初始化 PE3
 
-    GPIO_Initure.Pin = GPIO_PIN_5;                  //PC5：对应 K2
+    GPIO_Initure.Pin = GPIO_PIN_5;                  //PC5：对应 KEY2
     GPIO_Initure.Mode = GPIO_MODE_INPUT;            //输入
     GPIO_Initure.Pull = GPIO_PULLUP;                //上拉
     GPIO_Initure.Speed = GPIO_SPEED_FREQ_VERY_HIGH; //高速
     HAL_GPIO_Init(GPIOC, &GPIO_Initure);            //初始化 PC5
+
+    GPIO_Initure.Pin = GPIO_PIN_10;                  //PC5：对应 KEY3
+    GPIO_Initure.Mode = GPIO_MODE_INPUT;            //输入
+    GPIO_Initure.Pull = GPIO_PULLUP;                //上拉
+    GPIO_Initure.Speed = GPIO_SPEED_FREQ_VERY_HIGH; //高速
+    HAL_GPIO_Init(GPIOD, &GPIO_Initure);            //初始化 PD10
 }
 
 /****************************************************************************************/
