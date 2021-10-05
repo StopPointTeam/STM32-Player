@@ -5,7 +5,7 @@
 
 #define UART1_FIFO_EN 1 //调试用串口
 #define UART2_FIFO_EN 1 //WiFi 透传
-#define UART3_FIFO_EN 0
+#define UART3_FIFO_EN 1 //HC-12
 #define UART4_FIFO_EN 0
 #define UART5_FIFO_EN 0
 #define UART6_FIFO_EN 0
@@ -39,7 +39,7 @@ typedef enum
 #endif
 
 #if UART3_FIFO_EN == 1
-#define UART3_BAUD 115200
+#define UART3_BAUD 9600
 #define UART3_TX_BUF_SIZE 1 * 1024
 #define UART3_RX_BUF_SIZE 1 * 1024
 #endif

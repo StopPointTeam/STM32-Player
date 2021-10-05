@@ -407,6 +407,7 @@ uint8_t Uart_GetBuffUntil(COM_PORT_E _ucPort, uint8_t *_pBuf, uint8_t _endByte, 
             if (ch == _endByte)
             {
                 _pBuf[i] = '\0';
+
                 return 1;
             }
 
