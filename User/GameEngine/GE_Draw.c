@@ -116,7 +116,7 @@ uint16_t GE_Draw_GetPoint(int16_t x, int16_t y)
   * @param  y3: 0~239
   * @param  color: 颜色
   */
-void GE_Draw_Line(int16_t x0, int16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void GE_Draw_Line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     //使用 Bresenham 算法
     int16_t dx = abs(x1 - x0);
@@ -187,6 +187,31 @@ void GE_Draw_Circle(int16_t xm, int16_t ym, uint16_t r, uint16_t color)
         GE_Draw_Point(xm - y, ym - x, color);
         GE_Draw_Point(xm + x, ym - y, color);
         GE_Draw_Point(xm + y, ym + x, color);
+        rm = err;
+        if (rm > x)
+            err += ++x * 2 + 1;
+        if (rm <= y)
+            err += ++y * 2 + 1;
+    } while (x < 0);
+}
+
+/**
+  * @brief  以指定颜色填充圆
+  * @param  xm: 0~319
+  * @param  ym: 0~239
+  * @param  r: 圆的半径
+  * @param  color: 颜色
+  */
+void GE_Draw_FillCircle(int16_t xm, int16_t ym, uint16_t r, uint16_t color)
+{
+    int16_t x = -r, y = 0, err = 2 - 2 * r, rm = r;
+
+    do
+    {
+        GE_Draw_Line(xm - x, ym + y, xm + x, ym + y, color);
+        GE_Draw_Line(xm - y, ym - x, xm + y, ym - x, color);
+        GE_Draw_Line(xm + x, ym - y, xm - x, ym - y, color);
+        GE_Draw_Line(xm + y, ym + x, xm - y, ym + x, color);
         rm = err;
         if (rm > x)
             err += ++x * 2 + 1;

@@ -52,9 +52,10 @@ void GE_Draw_ClrAll(uint16_t color);
 void GE_Draw_Fill(int16_t x, int16_t y, uint16_t width, uint16_t height, uint16_t color);
 void GE_Draw_Point(int16_t x, int16_t y, uint16_t color);
 uint16_t GE_Draw_GetPoint(int16_t x, int16_t y);
-void GE_Draw_Line(int16_t x0, int16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void GE_Draw_Line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void GE_Draw_Rectangle(int16_t x, int16_t y, uint16_t width, uint16_t height, uint16_t color);
 void GE_Draw_Circle(int16_t xm, int16_t ym, uint16_t r, uint16_t color);
+void GE_Draw_FillCircle(int16_t xm, int16_t ym, uint16_t r, uint16_t color);
 
 /*****************************************************************************************/
 
