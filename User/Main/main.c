@@ -9,6 +9,7 @@
 #include "uart.h"
 #include "adc.h"
 #include "hc25.h"
+#include "hc12.h"
 
 #include "GameEngine.h"
 #include "SD.h"
@@ -20,6 +21,7 @@
 #include "APP_Plane.h"
 #include "APP_Setting.h"
 #include "APP_Weather.h"
+#include "APP_Ball.h"
 
 int main(void)
 {
@@ -41,7 +43,6 @@ int main(void)
 
     //初始化模块
     GE_Init();
-    SD_Init();
 
     GE_Draw_ClrAll(WHITE);
     GE_Draw_Disp();
@@ -51,6 +52,10 @@ int main(void)
     printf("完成系统初始化\n");
 
     HC25_Init();
+    HC12_Init();
+
+    APP_Ball_Launcher();
+    while (1);
 
     Clock_Init();
 
