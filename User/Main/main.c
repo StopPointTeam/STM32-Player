@@ -43,11 +43,10 @@ int main(void)
 
     //初始化模块
     GE_Init();
+    SD_Init();
 
     GE_Draw_ClrAll(WHITE);
     GE_Draw_Disp();
-
-    SD_Init();
 
     printf("完成系统初始化\n");
 
@@ -55,7 +54,8 @@ int main(void)
     HC12_Init();
 
     APP_Ball_Launcher();
-    while (1);
+    while (1)
+        ;
 
     Clock_Init();
 
