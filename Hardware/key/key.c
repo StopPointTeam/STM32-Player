@@ -152,10 +152,10 @@ static void InitKeyVar(void)
     }
 
     //摇杆上下左右，支持长按 1 秒后，自动连发
-    KEY_SetKeyParam(JOY_U, 100, 6);
-    KEY_SetKeyParam(JOY_D, 100, 6);
-    KEY_SetKeyParam(JOY_L, 100, 6);
-    KEY_SetKeyParam(JOY_R, 100, 6);
+    KEY_SetKeyParam(JOY_U, 50, 6);
+    KEY_SetKeyParam(JOY_D, 50, 6);
+    KEY_SetKeyParam(JOY_L, 50, 6);
+    KEY_SetKeyParam(JOY_R, 50, 6);
 }
 
 /**
