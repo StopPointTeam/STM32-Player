@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User\Main;..\Core;..\Libraries\HAL_Lib\Inc;..\Libraries\FatFs;..\Libraries\FatFs\drivers;..\System\systick;..\System\sys;..\System\spi;..\System\gpio;..\System\tim;..\System\usart;..\System\adc;..\Hardware\led;..\Hardware\key;..\Hardware\lcd;..\Hardware\sdio;..\Hardware\hc25;..\Hardware\hc12;..\User\GameEngine;..\User\Picture;..\User\SD;..\User\WLAN;..\User\Clock;..\User\APP_Reader;..\User\APP_Video;..\User\APP_Plane;..\User\APP_Weather;..\User\APP_Setting;..\User\APP_JumpMan;..\User\APP_Ball;..\User\FxLib</IncludePath>
+              <IncludePath>..\User\Main;..\Core;..\Libraries\HAL_Lib\Inc;..\Libraries\FatFs;..\Libraries\FatFs\drivers;..\System\systick;..\System\sys;..\System\spi;..\System\gpio;..\System\tim;..\System\usart;..\System\adc;..\Hardware\led;..\Hardware\key;..\Hardware\lcd;..\Hardware\sdio;..\Hardware\hc25;..\Hardware\hc12;..\User\GameEngine;..\User\Picture;..\User\SD;..\User\WLAN;..\User\Clock;..\User\APP_Reader;..\User\APP_Video;..\User\APP_Plane;..\User\APP_Weather;..\User\APP_Setting;..\User\APP_JumpMan;..\User\APP_Ball;..\User\APP_Gobang;..\User\FxLib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -812,6 +812,16 @@
               <FileName>APP_Ball.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\APP_Ball\APP_Ball.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_Gobang</GroupName>
+          <Files>
+            <File>
+              <FileName>APP_Gobang.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\APP_Gobang\APP_Gobang.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -22,6 +22,7 @@
 #include "APP_Setting.h"
 #include "APP_Weather.h"
 #include "APP_Ball.h"
+#include "APP_Gobang.h"
 
 int main(void)
 {
@@ -55,11 +56,11 @@ int main(void)
 
     printf("完成系统初始化\n");
 
-    uint8_t content[6][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "移动球", "设置"};
+    uint8_t content[7][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "移动球", "五子棋", "设置"};
     while (1)
     {
         GE_Draw_ClrAll(WHITE);
-        switch (GE_GUI_MenuBox(5, 5, 310, 230, "STM32Player", 6, content, NULL))
+        switch (GE_GUI_MenuBox(5, 5, 310, 230, "STM32Player", 7, content, NULL))
         {
         case 1:
         {
@@ -97,6 +98,13 @@ int main(void)
         break;
 
         case 6:
+        {
+            GE_Draw_ClrAll(WHITE);
+            APP_Gobang_Launcher();
+        }
+        break;
+
+        case 7:
         {
             GE_Draw_ClrAll(WHITE);
             APP_Setting_Launcher();
