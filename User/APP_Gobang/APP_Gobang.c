@@ -236,6 +236,9 @@ void APP_Gobang_MoveChess(void)
 
         case JOY_OK_DOWN:
         {
+            if (map[cursor_x][cursor_y] != NO_CHESS)
+                break;
+
             chess_kind = map[cursor_x][cursor_y] = turn == BLACK_TURN ? BLACK_CHESS : WHITE_CHESS;
             APP_Gobang_DispGobang();
             return;
