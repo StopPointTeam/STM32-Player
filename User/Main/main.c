@@ -53,17 +53,13 @@ int main(void)
     HC25_Init();
     HC12_Init();
 
-    APP_Ball_Launcher();
-    while (1)
-        ;
-
     Clock_Init();
 
-    uint8_t content[5][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "设置"};
+    uint8_t content[6][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "移动球", "设置"};
     while (1)
     {
         GE_Draw_ClrAll(WHITE);
-        switch (GE_GUI_MenuBox(5, 5, 310, 230, "STM32Player", 5, content, NULL))
+        switch (GE_GUI_MenuBox(5, 5, 310, 230, "STM32Player", 6, content, NULL))
         {
         case 1:
         {
@@ -94,6 +90,13 @@ int main(void)
         break;
 
         case 5:
+        {
+            GE_Draw_ClrAll(WHITE);
+            APP_Ball_Launcher();
+        }
+        break;
+
+        case 6:
         {
             GE_Draw_ClrAll(WHITE);
             APP_Setting_Launcher();
