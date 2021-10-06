@@ -45,15 +45,15 @@ int main(void)
     GE_Init();
     SD_Init();
 
-    GE_Draw_ClrAll(WHITE);
-    GE_Draw_Disp();
-
-    printf("完成系统初始化\n");
-
     HC25_Init();
     HC12_Init();
 
     Clock_Init();
+
+    GE_Draw_ClrAll(WHITE);
+    GE_Draw_Disp();
+
+    printf("完成系统初始化\n");
 
     uint8_t content[6][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "移动球", "设置"};
     while (1)
