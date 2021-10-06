@@ -1,5 +1,7 @@
 //系统设置应用
 
+#include "string.h"
+
 #include "sys.h"
 #include "systick.h"
 
@@ -68,17 +70,20 @@ void APP_Setting_Launcher(void)
 
                     if (WLAN_CheckNet())
                     {
-                        uint8_t temp_ip_str[20];
-                        uint8_t temp_ipaddr_str[40];
+                        uint8_t temp_ipaddr_str[60];
 
-                        Delay_ms(50);
-                        if (WLAN_GetIP(temp_ip_str) != 1)
-                            strcpy(temp_ip_str, "查询失败");
-                        Delay_ms(50);
-                        if (WLAN_GetIPAddr(temp_ipaddr_str) != 1)
+                        Delay_ms(2000);
+                        if (WLAN_GetIPAddr(temp_ipaddr_str))
+                        {
+                            char *ret = strrchr(temp_ipaddr_str, '&');
+                            *ret = '\n';
+                        }
+                        else
+                        {
                             strcpy(temp_ipaddr_str, "查询失败");
+                        }
 
-                        sprintf(temp_str, "网络已连接\n\nIP地址：%s\nIP归属地：%s", temp_ip_str, temp_ipaddr_str);
+                        sprintf(temp_str, "网络已连接\n\nIP地址及归属地：\n%s", temp_ipaddr_str);
                     }
                     else
                     {

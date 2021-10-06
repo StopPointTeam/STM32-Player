@@ -26,27 +26,12 @@ uint8_t WLAN_CheckNet(void)
         return 0;
 }
 
-uint8_t WLAN_GetIP(uint8_t *ip_str)
-{
-    HC25_ClearReceive;
-    HC25_SendBuff("ip", 3);
-
-    ip_str[0] = '\0';
-
-    if (HC25_ReceiveBuffUntil(ip_str, '\n', 1000) && strcmp(ip_str, "OK") == 0)
-        if (HC25_ReceiveBuffUntil(ip_str, '\n', 1000))
-            return 1;
-
-    return 0;
-}
-
 uint8_t WLAN_GetIPAddr(uint8_t *ipaddr_str)
 {
     HC25_ClearReceive;
     HC25_SendBuff("ipaddr", 7);
 
     ipaddr_str[0] = '\0';
-
     if (HC25_ReceiveBuffUntil(ipaddr_str, '\n', 1000) && strcmp(ipaddr_str, "OK") == 0)
         if (HC25_ReceiveBuffUntil(ipaddr_str, '\n', 1000))
             return 1;

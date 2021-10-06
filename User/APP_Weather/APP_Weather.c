@@ -42,7 +42,7 @@ uint8_t APP_Weather_Sync(void);
   */
 void APP_Weather_Launcher(void)
 {
-    APP_Weather_SetCity("ººÖÐ");
+    APP_Weather_SetCity("º¼ÖÝ");
 
     GE_Draw_ClrAll(WHITE);
 
