@@ -21,6 +21,8 @@
 #define BLACK_TURN 0
 #define WHITE_TURN 1
 
+#define MY_TURN BLACK_TURN //本机执子颜色
+
 #define NO_CHESS 0
 #define BLACK_CHESS 1
 #define WHITE_CHESS 2
@@ -31,6 +33,9 @@
 #define CHECK_DIAG_RIGHT 3
 
 #define CHESS_RADIUS 5
+
+#define START_BYTE '#'
+#define END_BYTE '&'
 
 /*****************************************************************************************/
 
@@ -64,6 +69,8 @@ void APP_Gobang_MoveChess(void);
 void APP_Gobang_DispCursor(void);
 int APP_Gobang_CheckNum(int check_type);
 void APP_Gobang_Msg(uint8_t *head, uint8_t *content);
+void APP_Gobang_SendPosition(void);
+void APP_Gobang_RevPosition(void);
 
 /*****************************************************************************************/
 
@@ -77,7 +84,12 @@ void APP_Gobang_Launcher(void)
     while (1)
     {
         APP_Gobang_DispGobang();
-        APP_Gobang_MoveChess();
+
+        if (turn == MY_TURN)
+            APP_Gobang_MoveChess();
+        else
+            APP_Gobang_RevPosition();
+
         turn = !turn; //更换执子方
 
         //判断胜负
@@ -240,6 +252,7 @@ void APP_Gobang_MoveChess(void)
                 break;
 
             chess_kind = map[cursor_x][cursor_y] = turn == BLACK_TURN ? BLACK_CHESS : WHITE_CHESS;
+            APP_Gobang_SendPosition();
             APP_Gobang_DispGobang();
             return;
         }
@@ -340,4 +353,42 @@ void APP_Gobang_Msg(uint8_t *head, uint8_t *content)
     GE_Draw_Fill(60, 75, 200, 90, WHITE);
     GE_GUI_MsgBox(60, 75, 200, 90, head, content, NULL);
     KEY_WaitKey(JOY_L);
+}
+
+void APP_Gobang_SendPosition(void)
+{
+    uint8_t position[6];
+    position[0] = START_BYTE;
+    position[1] = '0' + cursor_x / 10;
+    position[2] = '0' + cursor_x % 10;
+    position[3] = '0' + cursor_y / 10;
+    position[4] = '0' + cursor_y % 10;
+    position[5] = END_BYTE;
+
+    HC12_SendBuff(position, 6);
+}
+
+void APP_Gobang_RevPosition(void)
+{
+    uint8_t byte;
+    uint8_t position[5];
+    while (1)
+    {
+        if (HC12_Receive(&byte) == 1)
+        {
+            if (byte == START_BYTE)
+            {
+                HC12_ReceiveBuffUntil(position, END_BYTE, 500);
+                cursor_x = (position[0] - '0') * 10 + position[1] - '0';
+                cursor_y = (position[2] - '0') * 10 + position[3] - '0';
+
+                if (map[cursor_x][cursor_y] == NO_CHESS)
+                {
+                    chess_kind = map[cursor_x][cursor_y] = turn == BLACK_TURN ? BLACK_CHESS : WHITE_CHESS;
+                    APP_Gobang_DispGobang();
+                    break;
+                }
+            }
+        }
+    }
 }
