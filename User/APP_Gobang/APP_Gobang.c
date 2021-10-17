@@ -1,5 +1,7 @@
 //五子棋应用
 
+#include "stdlib.h"
+
 #include "sys.h"
 #include "systick.h"
 
@@ -21,8 +23,6 @@
 #define BLACK_TURN 0
 #define WHITE_TURN 1
 
-#define MY_TURN BLACK_TURN //本机执子颜色
-
 #define NO_CHESS 0
 #define BLACK_CHESS 1
 #define WHITE_CHESS 2
@@ -34,8 +34,15 @@
 
 #define CHESS_RADIUS 5
 
+#define NONE_MSG 0
+#define REQUEST_MSG 'R'
+#define AGREE_MSG 'A'
+#define REFUSE_MSG 'N'
+
 #define START_BYTE '#'
 #define END_BYTE '&'
+
+#define Random() rand()
 
 /*****************************************************************************************/
 
@@ -52,6 +59,12 @@ int turn = BLACK_TURN;
 
 //棋子类型
 int chess_kind = BLACK_CHESS;
+
+//我方执子类型
+int my_turn = BLACK_TURN;
+
+//联机消息
+uint8_t connetion_msg = NONE_MSG;
 
 uint8_t interval = 240 / WIDTH;
 uint16_t x_start, x_end, y_start, y_end;
@@ -71,6 +84,12 @@ int APP_Gobang_CheckNum(int check_type);
 void APP_Gobang_Msg(uint8_t *head, uint8_t *content);
 void APP_Gobang_SendPosition(void);
 void APP_Gobang_RevPosition(void);
+uint8_t APP_Gobang_Connect(void);
+uint8_t APP_Gobang_InitiateConnet(void);
+uint8_t APP_Gobang_ReplyConnect(void);
+void APP_Gobang_DecideMyTurn(void);
+void APP_Gobang_RevMyTurn(void);
+void APP_Gobang_ConnectRevHandler(uint8_t byte);
 
 /*****************************************************************************************/
 
@@ -79,13 +98,20 @@ void APP_Gobang_RevPosition(void);
   */
 void APP_Gobang_Launcher(void)
 {
+    srand(SysTick->VAL);
     APP_Gobang_Init();
+    APP_Gobang_DispGobang();
+    if (APP_Gobang_Connect() == 0)
+        return;
+    HC12_BindReceiveHandle(NULL);
+    KEY_ClearKey();
+    HC12_ClearReceive;
 
     while (1)
     {
         APP_Gobang_DispGobang();
 
-        if (turn == MY_TURN)
+        if (turn == my_turn)
             APP_Gobang_MoveChess();
         else
             APP_Gobang_RevPosition();
@@ -150,12 +176,17 @@ void APP_Gobang_DispGobang(void)
   */
 void APP_Gobang_DispText(void)
 {
-    if (turn == BLACK_TURN)
-        GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, interval / 2, BORDER_MAX, BORDER_MAX, "黑方");
+    if (turn == my_turn)
+        GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, interval / 2, BORDER_MAX, BORDER_MAX, "我方");
     else
-        GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, interval / 2, BORDER_MAX, BORDER_MAX, "白方");
+        GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, interval / 2, BORDER_MAX, BORDER_MAX, "对方");
+    GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, interval / 2 + FONT_16, BORDER_MAX, BORDER_MAX, "回合");
 
-    GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, interval / 2 + FONT_16, BORDER_MAX, BORDER_MAX, "执子");
+    GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, LCD_HEIGHT - interval / 2 - 2 * FONT_16, BORDER_MAX, BORDER_MAX, "我方");
+    if (my_turn == BLACK_TURN)
+        GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, LCD_HEIGHT - interval / 2 - FONT_16, BORDER_MAX, BORDER_MAX, "执黑");
+    else
+        GE_Font_Print_WithSet(LCD_WIDTH - FONT_16 * 2, LCD_HEIGHT - interval / 2 - FONT_16, BORDER_MAX, BORDER_MAX, "执白");
 }
 
 /**
@@ -390,5 +421,183 @@ void APP_Gobang_RevPosition(void)
                 }
             }
         }
+    }
+}
+
+uint8_t APP_Gobang_Connect(void)
+{
+    HC12_BindReceiveHandle(APP_Gobang_ConnectRevHandler);
+
+    GE_Draw_Fill(60, 75, 200, 90, WHITE);
+    GE_GUI_MsgBox(60, 75, 200, 90, "当前未联机", "按“OK”以发起联机", NULL);
+
+    while (1)
+    {
+        switch (KEY_GetKey())
+        {
+        case JOY_OK_DOWN:
+        {
+            if (APP_Gobang_InitiateConnet())
+            {
+                APP_Gobang_DecideMyTurn();
+                return 1;
+            }
+            else
+            {
+                GE_Draw_Fill(60, 75, 200, 90, WHITE);
+                GE_GUI_MsgBox(60, 75, 200, 90, "当前未联机", "按“OK”以发起联机", NULL);
+            }
+        }
+        break;
+
+        case JOY_L_DOWN:
+        {
+            return 0;
+        }
+        break;
+        }
+
+        if (connetion_msg == REQUEST_MSG)
+        {
+            if (APP_Gobang_ReplyConnect())
+            {
+                APP_Gobang_RevMyTurn();
+                return 1;
+            }
+            else
+            {
+                GE_Draw_Fill(60, 75, 200, 90, WHITE);
+                GE_GUI_MsgBox(60, 75, 200, 90, "当前未联机", "按“OK”以发起联机", NULL);
+            }
+        }
+    }
+}
+
+uint8_t APP_Gobang_InitiateConnet(void)
+{
+    int32_t start_time = SysTick_GetRunTime();
+
+    uint8_t msg[] = {START_BYTE, REQUEST_MSG};
+    HC12_SendBuff(msg, 2);
+    HC12_ClearReceive;
+
+    GE_Draw_Fill(60, 75, 200, 90, WHITE);
+    GE_GUI_MsgBox(60, 75, 200, 90, "当前未联机", "请求已发送，等待对方响应...", NULL);
+
+    while (1)
+    {
+        if (SysTick_CheckRunTime(start_time) > 10000)
+        {
+            GE_Draw_Fill(60, 75, 200, 90, WHITE);
+            GE_GUI_MsgBox(60, 75, 200, 90, "联机失败", "对方无响应,按“OK”退出", NULL);
+            KEY_WaitKey(JOY_OK);
+            connetion_msg = NONE_MSG;
+            return 0;
+        }
+
+        if (connetion_msg == AGREE_MSG)
+        {
+            GE_Draw_Fill(60, 75, 200, 90, WHITE);
+            GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
+            KEY_WaitKey(JOY_OK);
+            connetion_msg = NONE_MSG;
+            return 1;
+        }
+
+        else if (connetion_msg == REFUSE_MSG)
+        {
+            GE_Draw_Fill(60, 75, 200, 90, WHITE);
+            GE_GUI_MsgBox(60, 75, 200, 90, "联机失败", "对方拒绝联机,按“OK”退出", NULL);
+            KEY_WaitKey(JOY_OK);
+            connetion_msg = NONE_MSG;
+            return 0;
+        }
+    }
+}
+
+uint8_t APP_Gobang_ReplyConnect(void)
+{
+    uint8_t content[2][GE_GUI_MENUBOX_CONTENT_LEN] = {"是", "否"};
+    GE_Draw_Fill(60, 75, 200, 90, WHITE);
+
+    switch (GE_GUI_MenuBox(60, 75, 200, 90, "对方请求联机，是否接受？", 2, content, NULL))
+    {
+    case 0:
+        return 0;
+        break;
+
+    case 1:
+    {
+        uint8_t msg[] = {START_BYTE, AGREE_MSG};
+        HC12_SendBuff(msg, 2);
+        GE_Draw_Fill(60, 75, 200, 90, WHITE);
+        GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
+        KEY_WaitKey(JOY_OK);
+        return 1;
+    }
+    break;
+
+    case 2:
+    {
+        uint8_t msg[] = {START_BYTE, REFUSE_MSG};
+        HC12_SendBuff(msg, 2);
+        GE_Draw_Fill(60, 75, 200, 90, WHITE);
+        GE_GUI_MsgBox(60, 75, 200, 90, "联机失败", "已拒绝联机,按“OK”退出", NULL);
+        KEY_WaitKey(JOY_OK);
+        return 0;
+    }
+    break;
+    }
+}
+
+void APP_Gobang_DecideMyTurn(void)
+{
+    my_turn = Random() % 2;
+
+    uint8_t msg[] = {START_BYTE, !my_turn};
+    HC12_SendBuff(msg, 2);
+
+    uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
+    GE_Draw_Fill(60, 75, 200, 90, WHITE);
+    GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
+    Delay_ms(500);
+    KEY_WaitKey(JOY_OK);
+}
+
+void APP_Gobang_RevMyTurn(void)
+{
+    uint8_t byte;
+    while (1)
+    {
+        if (HC12_Receive(&byte) == 1)
+        {
+            if (byte == START_BYTE)
+            {
+                HC12_Receive(&my_turn);
+            }
+        }
+    }
+
+    uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
+    GE_Draw_Fill(60, 75, 200, 90, WHITE);
+    GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
+    Delay_ms(200);
+    KEY_WaitKey(JOY_OK);
+}
+
+void APP_Gobang_ConnectRevHandler(uint8_t byte)
+{
+    static uint8_t is_receiving = FALSE;
+
+    if (is_receiving == FALSE && byte == START_BYTE)
+    {
+        is_receiving = TRUE;
+        return;
+    }
+
+    if (is_receiving == TRUE)
+    {
+        connetion_msg = byte;
+        is_receiving = FALSE;
     }
 }
