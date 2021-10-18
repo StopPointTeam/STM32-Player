@@ -439,7 +439,11 @@ uint8_t APP_Gobang_Connect(void)
         {
             if (APP_Gobang_InitiateConnet())
             {
-                APP_Gobang_DecideMyTurn();
+                uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
+                GE_Draw_Fill(60, 75, 200, 90, WHITE);
+                GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
+                Delay_ms(500);
+                KEY_WaitKey(JOY_OK);
                 return 1;
             }
             else
@@ -461,7 +465,11 @@ uint8_t APP_Gobang_Connect(void)
         {
             if (APP_Gobang_ReplyConnect())
             {
-                APP_Gobang_RevMyTurn();
+                uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
+                GE_Draw_Fill(60, 75, 200, 90, WHITE);
+                GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
+                Delay_ms(200);
+                KEY_WaitKey(JOY_OK);
                 return 1;
             }
             else
@@ -497,6 +505,7 @@ uint8_t APP_Gobang_InitiateConnet(void)
 
         if (connetion_msg == AGREE_MSG)
         {
+            //APP_Gobang_RevMyTurn();
             GE_Draw_Fill(60, 75, 200, 90, WHITE);
             GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
             KEY_WaitKey(JOY_OK);
@@ -530,6 +539,8 @@ uint8_t APP_Gobang_ReplyConnect(void)
     {
         uint8_t msg[] = {START_BYTE, AGREE_MSG};
         HC12_SendBuff(msg, 2);
+        APP_Gobang_DecideMyTurn();
+
         GE_Draw_Fill(60, 75, 200, 90, WHITE);
         GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
         KEY_WaitKey(JOY_OK);
@@ -556,33 +567,6 @@ void APP_Gobang_DecideMyTurn(void)
 
     uint8_t msg[] = {START_BYTE, !my_turn};
     HC12_SendBuff(msg, 2);
-
-    uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
-    GE_Draw_Fill(60, 75, 200, 90, WHITE);
-    GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
-    Delay_ms(500);
-    KEY_WaitKey(JOY_OK);
-}
-
-void APP_Gobang_RevMyTurn(void)
-{
-    uint8_t byte;
-    while (1)
-    {
-        if (HC12_Receive(&byte) == 1)
-        {
-            if (byte == START_BYTE)
-            {
-                HC12_Receive(&my_turn);
-            }
-        }
-    }
-
-    uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
-    GE_Draw_Fill(60, 75, 200, 90, WHITE);
-    GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
-    Delay_ms(200);
-    KEY_WaitKey(JOY_OK);
 }
 
 void APP_Gobang_ConnectRevHandler(uint8_t byte)
@@ -597,7 +581,15 @@ void APP_Gobang_ConnectRevHandler(uint8_t byte)
 
     if (is_receiving == TRUE)
     {
-        connetion_msg = byte;
-        is_receiving = FALSE;
+        if(byte==REQUEST_MSG||byte==AGREE_MSG||byte==REFUSE_MSG)
+        {
+            connetion_msg = byte;
+            is_receiving = FALSE;
+        }
+        else if(byte=='0'||byte=='1')
+        {
+            my_turn=byte-'0';
+            is_receiving = FALSE;
+        }
     }
 }
