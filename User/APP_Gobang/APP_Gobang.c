@@ -34,6 +34,9 @@
 
 #define CHESS_RADIUS 5
 
+#define CONNETING_STATUS 0
+#define BATTLING_STATUS 1
+
 #define NONE_MSG 0
 #define REQUEST_MSG 'R'
 #define AGREE_MSG 'A'
@@ -62,6 +65,9 @@ int chess_kind = BLACK_CHESS;
 
 //我方执子类型
 int my_turn = BLACK_TURN;
+
+//当前所处状态
+int status = CONNETING_STATUS;
 
 //联机消息
 uint8_t connetion_msg = NONE_MSG;
@@ -103,9 +109,10 @@ void APP_Gobang_Launcher(void)
     APP_Gobang_DispGobang();
     if (APP_Gobang_Connect() == 0)
         return;
+    status = BATTLING_STATUS;
     HC12_BindReceiveHandle(NULL);
-    KEY_ClearKey();
     HC12_ClearReceive;
+    KEY_ClearKey();
 
     while (1)
     {
@@ -149,6 +156,8 @@ void APP_Gobang_Init(void)
     cursor_x = cursor_y = 7;
     turn = BLACK_TURN;
     chess_kind = BLACK_CHESS;
+    status = CONNETING_STATUS;
+    connetion_msg = NONE_MSG;
 
     x_start = (LCD_WIDTH - LCD_HEIGHT) / 2 + interval / 2;
     x_end = x_start + (WIDTH - 1) * interval;
@@ -162,10 +171,11 @@ void APP_Gobang_Init(void)
 void APP_Gobang_DispGobang(void)
 {
     GE_Draw_ClrAll(MAP_COLOR);
-    APP_Gobang_DispText();
     APP_Gobang_DispMap();
     APP_Gobang_DispChess();
     APP_Gobang_DispCursor();
+    if (status == BATTLING_STATUS)
+        APP_Gobang_DispText();
     GE_Draw_Disp();
 }
 
@@ -581,14 +591,14 @@ void APP_Gobang_ConnectRevHandler(uint8_t byte)
 
     if (is_receiving == TRUE)
     {
-        if(byte==REQUEST_MSG||byte==AGREE_MSG||byte==REFUSE_MSG)
+        if (byte == REQUEST_MSG || byte == AGREE_MSG || byte == REFUSE_MSG)
         {
             connetion_msg = byte;
             is_receiving = FALSE;
         }
-        else if(byte=='0'||byte=='1')
+        else if (byte == BLACK_TURN || byte == WHITE_TURN)
         {
-            my_turn=byte-'0';
+            my_turn = byte;
             is_receiving = FALSE;
         }
     }
