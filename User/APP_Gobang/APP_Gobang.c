@@ -134,10 +134,10 @@ void APP_Gobang_Launcher(void)
             APP_Gobang_CheckNum(CHECK_DIAG_LEFT) >= 5 ||
             APP_Gobang_CheckNum(CHECK_DIAG_RIGHT) >= 5)
         {
-            if (chess_kind == BLACK_CHESS ? 1 : 0)
-                APP_Gobang_Msg("游戏结束", "黑棋获得胜利！");
+            if ((chess_kind == BLACK_CHESS && my_turn == BLACK_TURN) || (chess_kind == WHITE_CHESS && my_turn == WHITE_TURN))
+                APP_Gobang_Msg("游戏结束", "恭喜您获得胜利！按“L”退出游戏");
             else
-                APP_Gobang_Msg("游戏结束", "白棋获得胜利！");
+                APP_Gobang_Msg("游戏结束", "很遗憾，您输了！按“L”退出游戏");
 
             return;
         }
@@ -241,6 +241,7 @@ void APP_Gobang_DispChess(void)
   */
 void APP_Gobang_MoveChess(void)
 {
+    KEY_ClearKey();
     while (1)
     {
         switch (KEY_GetKeyWait())
