@@ -41,6 +41,7 @@
 #define REQUEST_MSG 'R'
 #define AGREE_MSG 'A'
 #define REFUSE_MSG 'N'
+#define CONFIRM_MSG 'X'
 
 #define START_BYTE '#'
 #define END_BYTE '&'
@@ -95,6 +96,7 @@ uint8_t APP_Gobang_InitiateConnet(void);
 uint8_t APP_Gobang_ReplyConnect(void);
 void APP_Gobang_DecideMyTurn(void);
 void APP_Gobang_RevMyTurn(void);
+void APP_Gobang_ConfirmBeforeStart(void);
 void APP_Gobang_ConnectRevHandler(uint8_t byte);
 
 /*****************************************************************************************/
@@ -454,6 +456,7 @@ uint8_t APP_Gobang_Connect(void)
                 GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
                 Delay_ms(500);
                 KEY_WaitKey(JOY_OK);
+                APP_Gobang_ConfirmBeforeStart();
                 return 1;
             }
             else
@@ -478,8 +481,9 @@ uint8_t APP_Gobang_Connect(void)
                 uint8_t *head = (my_turn == BLACK_TURN ? "本局我方执黑" : "本局我方执白");
                 GE_Draw_Fill(60, 75, 200, 90, WHITE);
                 GE_GUI_MsgBox(60, 75, 200, 90, head, "按“OK”开始游戏", NULL);
-                Delay_ms(200);
+                Delay_ms(500);
                 KEY_WaitKey(JOY_OK);
+                APP_Gobang_ConfirmBeforeStart();
                 return 1;
             }
             else
@@ -515,11 +519,10 @@ uint8_t APP_Gobang_InitiateConnet(void)
 
         if (connetion_msg == AGREE_MSG)
         {
-            //APP_Gobang_RevMyTurn();
             GE_Draw_Fill(60, 75, 200, 90, WHITE);
             GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
+            //connetion_msg = NONE_MSG;
             KEY_WaitKey(JOY_OK);
-            connetion_msg = NONE_MSG;
             return 1;
         }
 
@@ -579,6 +582,28 @@ void APP_Gobang_DecideMyTurn(void)
     HC12_SendBuff(msg, 2);
 }
 
+void APP_Gobang_ConfirmBeforeStart(void)
+{
+    if (my_turn == BLACK_TURN)
+    {
+        GE_Draw_Fill(60, 75, 200, 90, WHITE);
+        GE_GUI_MsgBox(60, 75, 200, 90, "游戏即将开始", "正在确认白色方设备状态...", NULL);
+        while (connetion_msg != CONFIRM_MSG)
+        {
+            Delay_ms(100);
+        }
+        GE_Draw_Fill(60, 75, 200, 90, WHITE);
+        GE_GUI_MsgBox(60, 75, 200, 90, "准备就绪", "按“OK”开始游戏", NULL);
+        Delay_ms(500);
+        KEY_WaitKey(JOY_OK);
+    }
+    else
+    {
+        uint8_t msg[] = {START_BYTE, CONFIRM_MSG};
+        HC12_SendBuff(msg, 2);
+    }
+}
+
 void APP_Gobang_ConnectRevHandler(uint8_t byte)
 {
     static uint8_t is_receiving = FALSE;
@@ -591,7 +616,7 @@ void APP_Gobang_ConnectRevHandler(uint8_t byte)
 
     if (is_receiving == TRUE)
     {
-        if (byte == REQUEST_MSG || byte == AGREE_MSG || byte == REFUSE_MSG)
+        if (byte == REQUEST_MSG || byte == AGREE_MSG || byte == REFUSE_MSG || byte == CONFIRM_MSG)
         {
             connetion_msg = byte;
             is_receiving = FALSE;
