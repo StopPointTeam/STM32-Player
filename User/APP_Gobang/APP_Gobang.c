@@ -522,7 +522,6 @@ uint8_t APP_Gobang_InitiateConnet(void)
         {
             GE_Draw_Fill(60, 75, 200, 90, WHITE);
             GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
-            //connetion_msg = NONE_MSG;
             KEY_WaitKey(JOY_OK);
             return 1;
         }
@@ -546,6 +545,7 @@ uint8_t APP_Gobang_ReplyConnect(void)
     switch (GE_GUI_MenuBox(60, 75, 200, 90, "对方请求联机，是否接受？", 2, content, NULL))
     {
     case 0:
+        connetion_msg = NONE_MSG;
         return 0;
         break;
 
@@ -558,6 +558,7 @@ uint8_t APP_Gobang_ReplyConnect(void)
         GE_Draw_Fill(60, 75, 200, 90, WHITE);
         GE_GUI_MsgBox(60, 75, 200, 90, "联机成功", "按“OK”进入游戏", NULL);
         KEY_WaitKey(JOY_OK);
+        connetion_msg = NONE_MSG;
         return 1;
     }
     break;
@@ -569,6 +570,7 @@ uint8_t APP_Gobang_ReplyConnect(void)
         GE_Draw_Fill(60, 75, 200, 90, WHITE);
         GE_GUI_MsgBox(60, 75, 200, 90, "联机失败", "已拒绝联机,按“OK”退出", NULL);
         KEY_WaitKey(JOY_OK);
+        connetion_msg = NONE_MSG;
         return 0;
     }
     break;
