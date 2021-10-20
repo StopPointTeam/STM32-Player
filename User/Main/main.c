@@ -14,14 +14,12 @@
 #include "GameEngine.h"
 #include "SD.h"
 #include "WLAN.h"
-#include "Clock.h"
 
 #include "APP_Reader.h"
 #include "APP_Video.h"
 #include "APP_Plane.h"
 #include "APP_Setting.h"
 #include "APP_Weather.h"
-#include "APP_Ball.h"
 #include "APP_Gobang.h"
 
 int main(void)
@@ -49,18 +47,16 @@ int main(void)
     HC25_Init();
     HC12_Init();
 
-    Clock_Init();
-
     GE_Draw_ClrAll(WHITE);
     GE_Draw_Disp();
 
     printf("完成系统初始化\n");
 
-    uint8_t content[7][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "移动球", "五子棋", "设置"};
+    uint8_t content[6][GE_GUI_MENUBOX_CONTENT_LEN] = {"阅读器", "视频播放器", "飞机大战", "天气", "五子棋", "设置"};
     while (1)
     {
         GE_Draw_ClrAll(WHITE);
-        switch (GE_GUI_MenuBox(5, 5, 310, 230, "STM32Player", 7, content, NULL))
+        switch (GE_GUI_MenuBox(5, 5, 310, 230, "STM32Player", 6, content, NULL))
         {
         case 1:
         {
@@ -93,18 +89,11 @@ int main(void)
         case 5:
         {
             GE_Draw_ClrAll(WHITE);
-            APP_Ball_Launcher();
-        }
-        break;
-
-        case 6:
-        {
-            GE_Draw_ClrAll(WHITE);
             APP_Gobang_Launcher();
         }
         break;
 
-        case 7:
+        case 6:
         {
             GE_Draw_ClrAll(WHITE);
             APP_Setting_Launcher();
